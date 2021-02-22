@@ -30,9 +30,20 @@ void ArduinoLowPowerClass::idle() {
 	__WFI();
 }
 
-void ArduinoLowPowerClass::idle(uint32_t millis) {
-	setAlarmIn(millis);
-	idle();
+void ArduinoLowPowerClass::idle(uint32_t delay)
+{
+  uint32_t ticks = delay;
+  while (ticks > 0)
+  {
+    uint32_t lastMillis = millis();
+    idle();
+    uint32_t delta = millis() - lastMillis;
+    if (delta > ticks) {
+      ticks = 0;
+    } else {
+      ticks -= delta;
+    }
+  }
 }
 
 void ArduinoLowPowerClass::sleep() {
